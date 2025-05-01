@@ -1,0 +1,57 @@
+-- PostgreSQL Console Integrity Checker
+\echo '🔍 Connected to database: :DBNAME'
+\conninfo
+
+-- 1. Show current roles (users)
+\echo '👥 Roles (users) in the system:'
+SELECT rolname, rolsuper, rolcreatedb, rolcanlogin 
+FROM pg_roles
+ORDER BY rolname;
+
+-- 2. List all databases (excluding templates)
+\echo '📦 User-created databases:'
+SELECT datname 
+FROM pg_database 
+WHERE datistemplate = false
+ORDER BY datname;
+
+-- 3. Show current schema search path
+\echo '📚 Current search_path:'
+SHOW search_path;
+
+-- 4. Check key PostgreSQL configuration settings
+\echo '⚙️ Key config parameters:'
+SELECT name, setting 
+FROM pg_settings 
+WHERE name IN (
+  'max_connections',
+  'shared_buffers',
+  'work_mem',
+  'logging_collector',
+  'log_directory',
+  'listen_addresses'
+)
+ORDER BY name;
+
+-- 5. List installed extensions (plpgsql is default)
+\echo '🔌 Installed extensions:'
+SELECT extname, extversion 
+FROM pg_extension
+ORDER BY extname;
+
+-- 6. Check if postgres role has password set (basic security check)
+\echo '🔐 Password status for "postgres" role:'
+SELECT rolname, rolpassword IS NOT NULL AS has_password 
+FROM pg_authid 
+WHERE rolname = 'postgres';
+
+-- 7. Show tables in current database and schema
+\echo '📄 Tables in "public" schema of the current database:'
+SELECT tablename 
+FROM pg_tables 
+WHERE schemaname = 'public';
+
+-- 8. Suggest manual check for pg_hba.conf (outside SQL)
+\echo '📝 Note: Check authentication methods in /etc/postgresql/*/main/pg_hba.conf manually.'
+
+\echo '✅ PostgreSQL integrity check (console version) complete.'
