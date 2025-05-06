@@ -20,5 +20,5 @@ This is a simple Bash script to help verify the integrity of your PostgreSQL ins
 
 1. Clone the repository or copy the script:
    ```bash
-   git clone https://github.com/yourusername/postgres-checker.git
+   git clone https://github.com/karim2k/postgres-checker.git
    cd postgres-checker
